@@ -1,4 +1,4 @@
-import { t, tn, inGerman } from './i18n.js';
+import { t, tn } from './i18n.js';
 /**
  * The status readout: the Fins/Pad rows, the note under them and its (i), the
  * grams receipt, and why a part got no fins.
@@ -30,12 +30,9 @@ function explainNoFins(b) {
   // something that was never the problem. This outranks every mode-specific
   // reason below.
   if (b.seating?.kind === 'point' && !b.pad) {
-    const isDe = inGerman();
-    return isDe
-      ? 'Dieses Bauteil berührt die Druckplatte nur an einem einzelnen Punkt und hat daher keinen Stand. Aktivieren Sie den Stützfuß, um es zu stützen, oder drehen Sie es, bis es auf einer Fläche oder Kante aufliegt.'
-      : 'this part touches the plate at a single point, so it has nothing to '
-        + 'stand on. Turn the bed pad on to seat it, or rotate until it sits '
-        + 'down on a face or an edge';
+    return t('this part touches the plate at a single point, so it has nothing to '
+      + 'stand on. Turn the bed pad on to seat it, or rotate until it sits '
+      + 'down on a face or an edge');
   }
   // Plate only (#218) emptied it: in any mode, that is the reason to name
   if (b.skipped?.onPart) {
@@ -313,8 +310,7 @@ function updateFinReadout(built, ms) {
     ? `${autoTxt || drawnTxt ? ' + ' : ''}${sw.count} sway brace${sw.count === 1 ? '' : 's'}`
       + (sw.tines ? ` · ${sw.tines} brace tines` : '')
     : '';
-  const isDeReadout = inGerman();
-  box.textContent = (autoTxt + drawnTxt + swayTxt + removedTxt) || (isDeReadout ? 'keine möglich' : 'none possible');
+  box.textContent = (autoTxt + drawnTxt + swayTxt + removedTxt) || t('none possible');
   box.classList.toggle('warn', n === 0 && !drawnOk && !sw?.count);
 
   // `lead` = short + must-see, stays in the panel; `help` = how-it-works and
@@ -372,75 +368,49 @@ function updateFinReadout(built, ms) {
   }
   if (padNote(built)) lead.push(padNote(built));
   if (built.floating?.length) {
-    const isDe = inGerman();
     const n = built.floating.length;
     const drop = built.floating[0].drop.toFixed(1);
-    lead.push(isDe
-      ? ((n === 1 ? `Ein Teil dieses Modells ist nicht mit dem Rest verbunden: Es beginnt ${drop} mm weiter oben`
-                  : `${n} Teile dieses Modells sind nicht mit dem Rest verbunden: Das erste beginnt ${drop} mm weiter oben`)
-         + ', nur von Stützen gehalten. Prüfen Sie, ob das Modell aus einem Stück besteht (eine Bohrung oder ein Schnitt geht eventuell komplett durch).')
-      : ((n === 1 ? `one piece of this part isn’t joined to the rest: it starts ${drop} mm up`
-                  : `${n} pieces of this part aren’t joined to the rest: the first starts ${drop} mm up`)
-         + ', held only by supports. Check the model is one piece (a hole or cut may go right through)'));
+    lead.push(tn('one piece of this part isn’t joined to the rest: it starts {drop} mm up, '
+                 + 'held only by supports. Check the model is one piece (a hole or cut may go right through)',
+                 '{n} pieces of this part aren’t joined to the rest: the first starts {drop} mm up, '
+                 + 'held only by supports. Check the model is one piece (a hole or cut may go right through)',
+                 n, { drop }));
   }
   if (built.sagRisk) {
-    const isDe = inGerman();
-    lead.push(isDe
-      ? 'Die Abdeckung liegt unter der Empfehlung gegen Durchhängen, sodass ein breiter Überhang zwischen den Stützen durchhängen kann — Schieberegler nach rechts ziehen, falls sich die Fläche durchbiegt'
-      : ('coverage is below the anti-sag guide, so a broad overhang may sag '
-         + 'between supports — nudge the slider right if the surface bows'));
+    lead.push(t('coverage is below the anti-sag guide, so a broad overhang may sag '
+                + 'between supports — nudge the slider right if the surface bows'));
   }
   // Full coverage (fins/fill.js): what it added, and -- must-see, in the panel --
   // the red it couldn't reach, never hidden.
   const fl = built.fill;
   if (fl) {
-    const isDe = inGerman();
     if (fl.walls) {
-      help.push(isDe
-        ? `Vollständige Abdeckung fügte ${fl.walls} Wand/Wände unter Überhängen hinzu, die Auto frei gelassen hatte.`
-        : `Full coverage added ${fl.walls} wall${fl.walls === 1 ? '' : 's'} under overhangs Auto left bare.`);
+      help.push(tn('Full coverage added {n} wall under overhangs Auto left bare.',
+                   'Full coverage added {n} walls under overhangs Auto left bare.', fl.walls));
     } else if (fl.bareBefore < 1 && n) {
-      help.push(isDe
-        ? 'Auto erreicht hier bereits jeden Überhang, daher hat die vollständige Abdeckung nichts hinzugefügt.'
-        : 'Auto already reaches every overhang here, so Full coverage added nothing.');
+      help.push(t('Auto already reaches every overhang here, so Full coverage added nothing.'));
     }
     const bare = Math.round(fl.unservedArea);
     if (fl.capped) {
-      lead.push(isDe
-        ? `Vollständige Abdeckung stoppte am Wandlimit mit ${bare} mm² noch freiem Überhang — Bauteil drehen oder zu Auto wechseln`
-        : `Full coverage stopped at its wall limit with ${bare} mm² of overhang still bare — rotate the part, or switch to Auto`);
+      lead.push(t('Full coverage stopped at its wall limit with {area} mm² of overhang still bare — rotate the part, or switch to Auto', { area: bare }));
     } else if (bare >= 1) {
-      lead.push(isDe
-        ? `${bare} mm² Überhang kann in dieser Lage von keiner Wand erreicht werden — Bauteil neigen oder manuell eine Wand hinzufügen`
-        : `${bare} mm² of overhang no wall can reach this way up — tilt the part, or add a wall by hand`);
+      lead.push(t('{area} mm² of overhang no wall can reach this way up — tilt the part, or add a wall by hand', { area: bare }));
     }
   }
   // (in Full coverage the fill's own line above says what is still bare)
   if (built.unserved && !fl) {
-    const isDe = inGerman();
-    const one = built.unserved === 1;
-    if (isDe) {
-      help.push(`${built.unserved} ${one ? 'Überhang ist' : 'Überhänge sind'} `
-              + 'zu flach für eine Finne in dieser Lage. Neigen Sie das Bauteil steiler, '
-              + 'damit eine Finne folgen kann (versuchen Sie „Ausrichtung vorschlagen“), '
-              + 'oder fügen Sie manuell eine Stützwand hinzu.');
-    } else {
-      help.push(`${built.unserved} overhang${one ? ' is' : 's are'} `
-              + 'too shallow for a fin this way up. Tilt the part steeper so a fin can '
-              + 'follow it (try Suggest orientation), or add a wall by hand.');
-    }
+    help.push(tn('{n} overhang is too shallow for a fin this way up. Tilt the part steeper so a fin can '
+                 + 'follow it (try Suggest orientation), or add a wall by hand.',
+                 '{n} overhangs are too shallow for a fin this way up. Tilt the part steeper so a fin can '
+                 + 'follow it (try Suggest orientation), or add a wall by hand.', built.unserved));
   }
   // Plate only (#218) left these bare: say so, so the red isn't a mystery
   const onPart = built.skipped?.onPart ?? 0;
   if (onPart) {
-    const isDe = inGerman();
-    help.push(isDe
-      ? `${onPart} ${onPart === 1 ? 'Stütze wurde' : 'Stützen wurden'} gekürzt oder weggelassen, weil `
-        + 'Bauteil unter dem Überhang liegt und „Nur Druckplatte“ aktiv ist. Deaktivieren Sie es, '
-        + 'um sie auf das Bauteil zu stellen.'
-      : `${onPart} support${onPart === 1 ? ' was' : 's were'} cut short or left off because part `
-        + 'of the model sits under the overhang and Plate only is on. Untick it to stand '
-        + 'them on the part.');
+    help.push(tn('{n} support was cut short or left off because part of the model sits under '
+                 + 'the overhang and Plate only is on. Untick it to stand them on the part.',
+                 '{n} supports were cut short or left off because part of the model sits under '
+                 + 'the overhang and Plate only is on. Untick it to stand them on the part.', onPart));
   }
   // Sway braces were asked for, so say what they did -- and why, if nothing.
   if (sw) {

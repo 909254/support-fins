@@ -1,4 +1,4 @@
-import { inGerman } from './i18n.js';
+import { t, tn } from './i18n.js';
 /**
  * File import: sniff the format, read STL / 3MF / STEP into one flat position
  * array, let the user pick objects from a multi-object file, and hand the
@@ -20,30 +20,26 @@ let pendingSession = null;
 
 export function renderImportNote() {
   if (!lastImportMeta) return '';
-  const isDe = inGerman();
   const m = lastImportMeta;
   const notes = [];
   if (m.type === '3MF') {
     if (m.objectsLength > 1) {
       notes.push(m.chosenLength === 1
-        ? (isDe ? `„${m.chosenName}“ von ${m.objectsLength} Objekten importiert` : `imported “${m.chosenName}” of ${m.objectsLength} objects`)
-        : (isDe ? `${m.chosenLength} von ${m.objectsLength} Objekten zu einem Bauteil zusammengeführt` : `merged ${m.chosenLength} of ${m.objectsLength} objects into one part`));
+        ? t('imported “{name}” of {total} objects', { name: m.chosenName, total: m.objectsLength })
+        : t('merged {n} of {total} objects into one part', { n: m.chosenLength, total: m.objectsLength }));
     } else if (m.meshes > 1) {
-      notes.push(isDe ? `${m.meshes} Körper zu einem Bauteil zusammengeführt` : `merged ${m.meshes} bodies into one part`);
+      notes.push(t('merged {n} bodies into one part', { n: m.meshes }));
     }
-    if (m.skipped) notes.push(isDe ? `${m.skipped} Stütz-/nicht druckbare(n) Körper ignoriert` : `ignored ${m.skipped} support/non-printable ${m.skipped === 1 ? 'body' : 'bodies'}`);
-    if (m.unit && m.unit !== 'millimeter') notes.push(isDe ? `von ${m.unit} nach mm konvertiert` : `converted from ${m.unit} to mm`);
+    if (m.skipped) notes.push(tn('ignored {n} support/non-printable body', 'ignored {n} support/non-printable bodies', m.skipped));
+    if (m.unit && m.unit !== 'millimeter') notes.push(t('converted from {unit} to mm', { unit: m.unit }));
     if (m.session === 'restored') {
       notes.push(m.restored
-        ? (isDe ? `${m.restored} von Hand gesetzte Stütze(n) und die Einstellungen wiederhergestellt`
-                : `restored ${m.restored} hand-placed support${m.restored === 1 ? '' : 's'} and the settings`)
-        : (isDe ? 'die Einstellungen wiederhergestellt' : 'restored the settings'));
+        ? tn('restored {n} hand-placed support and the settings', 'restored {n} hand-placed supports and the settings', m.restored)
+        : t('restored the settings'));
     } else if (m.session === 'changed') {
-      notes.push(isDe ? 'gespeicherte Stützen nicht geladen: das Bauteil wurde seit dem Export geändert'
-                      : 'saved supports not loaded: the part changed since it was exported');
+      notes.push(t('saved supports not loaded: the part changed since it was exported'));
     } else if (m.session === 'unreadable') {
-      notes.push(isDe ? 'gespeicherte Stützen nicht geladen: die Sitzungsdaten sind beschädigt'
-                      : 'saved supports not loaded: the saved session is damaged');
+      notes.push(t('saved supports not loaded: the saved session is damaged'));
     }
     return notes.length ? `3MF: ${notes.join('; ')}.` : '';
   }
@@ -185,16 +181,15 @@ async function parseModel(buffer) {
   // Say what we decided for them: which/how many bodies, any support bodies left
   // on the plate, and any unit conversion.
   const notes = [];
-  const isDe = inGerman();
   if (objects.length > 1) {
     notes.push(chosen.length === 1
-      ? (isDe ? `„${chosen[0].name}“ von ${objects.length} Objekten importiert` : `imported “${chosen[0].name}” of ${objects.length} objects`)
-      : (isDe ? `${chosen.length} von ${objects.length} Objekten zu einem Bauteil zusammengeführt` : `merged ${chosen.length} of ${objects.length} objects into one part`));
+      ? t('imported “{name}” of {total} objects', { name: chosen[0].name, total: objects.length })
+      : t('merged {n} of {total} objects into one part', { n: chosen.length, total: objects.length }));
   } else if (chosen[0].meshes > 1) {
-    notes.push(isDe ? `${chosen[0].meshes} Körper zu einem Bauteil zusammengeführt` : `merged ${chosen[0].meshes} bodies into one part`);
+    notes.push(t('merged {n} bodies into one part', { n: chosen[0].meshes }));
   }
-  if (skipped) notes.push(isDe ? `${skipped} Stütz-/nicht druckbare(n) Körper ignoriert` : `ignored ${skipped} support/non-printable ${skipped === 1 ? 'body' : 'bodies'}`);
-  if (unit && unit !== 'millimeter') notes.push(isDe ? `von ${unit} nach mm konvertiert` : `converted from ${unit} to mm`);
+  if (skipped) notes.push(tn('ignored {n} support/non-printable body', 'ignored {n} support/non-printable bodies', skipped));
+  if (unit && unit !== 'millimeter') notes.push(t('converted from {unit} to mm', { unit }));
   lastImportMeta = {
     type: '3MF',
     objectsLength: objects.length,

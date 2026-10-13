@@ -1,8 +1,10 @@
 import de from '../i18n/de.js';
+import pt from '../i18n/pt.js';
 
 export const SUPPORTED_LANGS = {
   en: 'English',
   de: 'Deutsch',
+  pt: 'Português',
 };
 
 const STORAGE_KEY = 'support_fins_lang';
@@ -28,10 +30,6 @@ function initialLang() {
 
 export let currentLang = initialLang();
 
-/** Is the page in German? From currentLang, which initialLang/setLanguage keep in step
- *  with storage -- reading localStorage here threw where the browser blocks it. */
-export const inGerman = () => currentLang === 'de';
-
 if (!SUPPORTED_LANGS[currentLang]) currentLang = 'en';
 
 export const norm = (s) => (s || '')
@@ -42,12 +40,9 @@ export const norm = (s) => (s || '')
   .replace(/\s+/g, ' ')
   .trim();
 
-const normDe = {};
-for (const [k, v] of Object.entries(de)) {
-  normDe[norm(k)] = v;
-}
+const normalized = (dict) => Object.fromEntries(Object.entries(dict).map(([k, v]) => [norm(k), v]));
 
-const DICTIONARIES = { de: normDe };
+const DICTIONARIES = { de: normalized(de), pt: normalized(pt) };
 
 const pluralCache = new Map();
 function getPluralRule(lang, n) {

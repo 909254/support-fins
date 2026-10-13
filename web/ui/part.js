@@ -1,4 +1,4 @@
-import { t, inGerman } from './i18n.js';
+import { t, tn } from './i18n.js';
 /**
  * The part: loading a mesh onto the plate (setPart), re-analysing and shading it
  * in its current pose (shade), the stats panel, the build-volume fit check, and
@@ -165,22 +165,17 @@ export function paintOverhangs(res = lastResult) {
   // The slivers keep their own amber swatch, so the amber faces have a name even
   // when this pose has no region the tool supports.
   const sOver = el('s-over');
-  const isDe = inGerman();
   const regCount = res.regions.length;
   if (regCount === 0) {
-    sOver.textContent = isDe ? 'keine' : 'none';
+    sOver.textContent = t('none');
   } else {
-    sOver.textContent = isDe
-      ? `${regCount} ${regCount === 1 ? 'Bereich' : 'Bereiche'}`
-      : `${regCount} region${regCount === 1 ? '' : 's'}`;
+    sOver.textContent = tn('{n} region', '{n} regions', regCount);
   }
   if (dropped) {
     const sw = document.createElement('i');
     sw.className = 'sw sw-small';
-    sw.title = isDe
-      ? `Bernstein: Überhänge unter ${MIN_REGION_AREA} mm², zu klein für eine Finne`
-      : `Amber: overhangs under ${MIN_REGION_AREA} mm², too small for a fin`;
-    sOver.append(' (+', sw, isDe ? ` ${dropped} Splitter)` : `${dropped} sliver${dropped === 1 ? '' : 's'})`);
+    sw.title = t('Amber: overhangs under {area} mm², too small for a fin', { area: MIN_REGION_AREA });
+    sOver.append(' (+', sw, `${tn('{n} sliver', '{n} slivers', dropped)})`);
   }
   sOver.classList.toggle('good', res.regions.length === 0 && !dropped);
 
@@ -376,24 +371,19 @@ export function syncPartLanguage() {
     if (note) el('s-import-note').textContent = note;
   }
   if (!lastShadeRes) return;
-  const isDe = inGerman();
   const dropped = lastShadeRes.rawRegionCount - lastShadeRes.regions.length;
   const regCount = lastShadeRes.regions.length;
   const sOver = el('s-over');
   if (regCount === 0) {
-    sOver.textContent = isDe ? 'keine' : 'none';
+    sOver.textContent = t('none');
   } else {
-    sOver.textContent = isDe
-      ? `${regCount} ${regCount === 1 ? 'Bereich' : 'Bereiche'}`
-      : `${regCount} region${regCount === 1 ? '' : 's'}`;
+    sOver.textContent = tn('{n} region', '{n} regions', regCount);
   }
   if (dropped) {
     const sw = document.createElement('i');
     sw.className = 'sw sw-small';
-    sw.title = isDe
-      ? `Bernstein: Überhänge unter ${MIN_REGION_AREA} mm², zu klein für eine Finne`
-      : `Amber: overhangs under ${MIN_REGION_AREA} mm², too small for a fin`;
-    sOver.append(' (+', sw, isDe ? ` ${dropped} Splitter)` : `${dropped} sliver${dropped === 1 ? '' : 's'})`);
+    sw.title = t('Amber: overhangs under {area} mm², too small for a fin', { area: MIN_REGION_AREA });
+    sOver.append(' (+', sw, `${tn('{n} sliver', '{n} slivers', dropped)})`);
   }
 }
 
