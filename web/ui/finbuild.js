@@ -9,6 +9,7 @@ import { PROP } from '../prop.js';
 import { CUT } from '../cutout.js';
 import { nozzle, wallLines } from '../nozzle.js';
 import { el } from './dom.js';
+import { t } from './i18n.js';
 import { scene, meshFrom, ifaceMaterial, clip, requestRender } from './scene.js';
 import {
   removeMode, syncRemoveUI, cancelRemove, clearFinHover, adoptFins, forgetFins,
@@ -287,5 +288,5 @@ function applyBuilt(built) {
 export function markFinsStale() {
   for (const m of [finMesh, padMesh, drawnMesh]) if (m) for (const mat of [m.material].flat()) mat.opacity = 0.25;
   finMaterial.transparent = padMaterial.transparent = drawMaterial.transparent = ifaceMaterial.transparent = true;
-  el('s-fins').textContent = 'generating supports…';
+  el('s-fins').textContent = t('generating supports…');
 }

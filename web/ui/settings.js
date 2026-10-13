@@ -290,18 +290,18 @@ export function syncSectionSums() {
   el('sum-setup').textContent = `${el('nozzle').value} mm · ${sel('fin-mode')}`;
   const grip = el('tine-density').valueAsNumber;
   el('sum-tines').textContent = el('tines').checked
-    ? `${grip <= 20 ? 'light' : grip >= 80 ? 'firm' : 'medium'} grip · ${el('layer-height').value} mm`
-    : 'off';
+    ? `${t(grip <= 20 ? 'light grip' : grip >= 80 ? 'firm grip' : 'medium grip')} · ${el('layer-height').value} mm`
+    : t('off');
   el('sum-clearances').textContent =
-    `${el('gap').value} mm gap · pad ${el('bed-pad').selectedOptions[0].textContent.toLowerCase()}`;
+    `${el('gap').value} mm ${t('gap')} · ${t('pad')} ${el('bed-pad').selectedOptions[0].textContent.toLowerCase()}`;
   const cut = el('cutout').value;
   el('sum-walls').textContent = `${+PROP.th.toFixed(2)} mm · `
-    + (cut === 'none' ? 'solid' : `${sel('cutout').toLowerCase()} cutouts`)
-    + (el('plate-only').checked ? ' · plate only' : '');
+    + (cut === 'none' ? t('solid') : t('{style} cutouts', { style: sel('cutout').toLowerCase() }))
+    + (el('plate-only').checked ? ` · ${t('plate only')}` : '');
   el('sum-sway').textContent = el('sway').checked
-    ? `${el('sway-spacing').value} mm tines · ${el('sway-depth').value}% deep`
-      + (el('sway-from').valueAsNumber > 0 ? ` · from ${el('sway-from').value} mm` : '')
-    : 'off';
+    ? `${el('sway-spacing').value} mm ${t('tines')} · ${el('sway-depth').value}% ${t('deep')}`
+      + (el('sway-from').valueAsNumber > 0 ? ` · ${t('from')} ${el('sway-from').value} mm` : '')
+    : t('off');
   el('sum-display').textContent = el('highlight-small').checked ? t('small overhangs highlighted') : t('no highlight');
 }
 el('fin-opts').addEventListener('input', syncSectionSums);

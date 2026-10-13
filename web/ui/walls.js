@@ -219,10 +219,10 @@ function pickSupport(ev) {
 export function selectedNote() {
   const i = selectedWall.info ?? {};
   const what = selectedWall.kind === 'sway'
-    ? `sway brace ${Math.round(i.height ?? 0)}mm tall`
-    : `wall ${Math.round(i.length ?? 0)}mm long`;
-  return `selected: ${what}${i.tines ? `, ${i.tines} tines` : ''}. Press Delete or `
-    + 'Remove selected to take it out (Esc to keep it)';
+    ? t('sway brace {mm}mm tall', { mm: Math.round(i.height ?? 0) })
+    : t('wall {mm}mm long', { mm: Math.round(i.length ?? 0) });
+  const tines = i.tines ? `, ${t('{n} tines', { n: i.tines })}` : '';
+  return t('selected: {what}{tines}. Press Delete or Remove selected to take it out (Esc to keep it)', { what, tines });
 }
 
 export function selectWall(w) {
@@ -282,7 +282,7 @@ function placeSecondPoint(hitPoint) {
   const r = drawnWall([aWorld.x, aWorld.y, aWorld.z],
                       [bWorld.x, bWorld.y, bWorld.z], tris, 0);
   if (!r.ok) {
-    drawMsg = `couldn’t place that wall: ${r.reason}`;
+    drawMsg = t('couldn’t place that wall: {reason}', { reason: t(r.reason) });
     clearPreview();
     updateReadout(lastBuilt);
     return;
@@ -331,7 +331,7 @@ function placeSway(hit) {
                        [hit.point.x, hit.point.y, hit.point.z], swayOpts(),
                        { braces: standing, walls: auto.walls });
   if (!r.ok) {
-    drawMsg = `couldn’t place that brace: ${r.reason}`;
+    drawMsg = t('couldn’t place that brace: {reason}', { reason: t(r.reason) });
     updateReadout(lastBuilt);
     return;
   }

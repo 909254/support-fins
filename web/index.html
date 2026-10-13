@@ -40,7 +40,7 @@
            type="number" id="vy" min="20" max="2000" step="1" aria-label="depth">×<input
            type="number" id="vz" min="20" max="2000" step="1" aria-label="height">mm
   </span>
-  <label class="field" title="Surface angle from the plate below which a face needs support.">
+  <label class="field" data-i18n-title title="Surface angle from the plate below which a face needs support.">
     <span data-i18n="Overhang">Overhang</span>
     <input type="range" id="thr" min="30" max="70" step="1" value="45">
     <output id="thr-val">45°</output>
@@ -54,10 +54,10 @@
             aria-controls="export-menu" data-i18n="Export ▾">Export&nbsp;▾</button>
     <div class="menu" id="export-menu" role="menu" hidden>
       <button role="menuitem" id="export-stl"
-              title="Part and fins merged into one solid.">STL</button>
-      <button role="menuitem" id="export-3mf" title="Part and supports as two separate objects, so the slicer keeps them apart and the tines only touch the part: they snap off cleaner. Opens in place in Bambu Studio, OrcaSlicer and PrusaSlicer; don't Arrange or move one without the other. 'No config, geometry only' is expected.">3MF</button>
+              data-i18n-title title="Part and fins merged into one solid.">STL</button>
+      <button role="menuitem" id="export-3mf" data-i18n-title title="Part and supports as two separate objects, so the slicer keeps them apart and the tines only touch the part: they snap off cleaner. Opens in place in Bambu Studio, OrcaSlicer and PrusaSlicer; don't Arrange or move one without the other. 'No config, geometry only' is expected.">3MF</button>
       <button role="menuitem" id="export-fins"
-              title="Just the fins and pad, in the part's print position, so they line up if imported beside it.">Fins only (STL)</button>
+              data-i18n-title title="Just the fins and pad, in the part's print position, so they line up if imported beside it." data-i18n="Fins only (STL)">Fins only (STL)</button>
     </div>
   </span>
   <!-- Calibration prints (web/ui/calibrate.js): one test print per setting, its
@@ -84,9 +84,9 @@
         <select id="plugins-computer"></select>
       </label>
       <div id="plugins-list"></div>
-      <p class="plugins-foot">Built from this site's engine on every update.
+      <p class="plugins-foot"><span data-i18n="Built from this site's engine on every update.">Built from this site's engine on every update.</span>
         <a href="https://github.com/gittrahan/support-fins/releases/tag/plugins-latest"
-           target="_blank" rel="noopener">All files</a></p>
+           target="_blank" rel="noopener" data-i18n="All files">All files</a></p>
     </div>
   </span>  <span class="menu-wrap">
     <button class="btn" id="lang-btn" aria-haspopup="menu" aria-expanded="false"
@@ -99,11 +99,11 @@
     </div>
   </span>
   <a class="btn gh" href="https://github.com/gittrahan/support-fins" target="_blank" rel="noopener"
-     title="Source code on GitHub. Runs entirely in your browser; no file ever leaves your machine."
+     data-i18n-title title="Source code on GitHub. Runs entirely in your browser; no file ever leaves your machine."
      aria-label="Support Fins on GitHub"><svg viewBox="0 0 16 16" width="16" height="16"
      aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span class="lbl">&nbsp;GitHub</span></a>
   <a class="btn kofi" href="https://ko-fi.com/matthewtrahan" target="_blank" rel="noopener" aria-label="Ko-fi"
-     title="Support Fins is free and open source — buy me a coffee on Ko-fi.">☕<span class="lbl">&nbsp;Ko-fi</span></a>
+     data-i18n-title title="Support Fins is free and open source — buy me a coffee on Ko-fi.">☕<span class="lbl">&nbsp;Ko-fi</span></a>
 </header>
 
 <!-- The two stacked left-hand panels (stats + rotate controls) share one fixed
@@ -120,7 +120,7 @@
   </dl>
   <hr>
   <dl>
-    <dt><i class="sw sw-over" title="Red: overhangs the tool can support"></i><span data-i18n="Overhangs">Overhangs</span></dt> <dd id="s-over">—</dd>
+    <dt><i class="sw sw-over" data-i18n-title title="Red: overhangs the tool can support"></i><span data-i18n="Overhangs">Overhangs</span></dt> <dd id="s-over">—</dd>
     <dt data-i18n="Area">Area</dt>                                <dd id="s-overarea">—</dd>
     <dt><i class="sw sw-bed"></i><span data-i18n="Bed contact">Bed&nbsp;contact</span></dt> <dd id="s-bed">—</dd>
     <dt><i class="sw sw-fin"></i><span data-i18n="Fins">Fins</span></dt>       <dd><span id="s-fins">—</span><button
@@ -137,8 +137,8 @@
   <button class="btn sm" id="rot-y" aria-label="Rotate 90 degrees about Y">Y</button>
   <button class="btn sm" id="rot-z" aria-label="Rotate 90 degrees about Z">Z</button>
   <button class="btn sm" id="rot-reset"><span data-i18n="Reset">Reset</span></button>
-  <button class="btn sm" id="undo" title="Undo (⌘/Ctrl+Z)" disabled><span data-i18n="Undo">Undo</span></button>
-  <button class="btn sm" id="redo" title="Redo (⇧⌘/Ctrl+Shift+Z)" disabled><span data-i18n="Redo">Redo</span></button>
+  <button class="btn sm" id="undo" data-i18n-title title="Undo (⌘/Ctrl+Z)" disabled><span data-i18n="Undo">Undo</span></button>
+  <button class="btn sm" id="redo" data-i18n-title title="Redo (⇧⌘/Ctrl+Shift+Z)" disabled><span data-i18n="Redo">Redo</span></button>
   <p class="readout"><span id="rot-now">X 0° · Y 0° · Z 0°</span><span id="rot-delta"></span></p>
   <p class="hint" id="rings-hint" data-i18n="Drag the rings to turn it, or:">Drag the rings to turn it, or:</p>
   <button class="btn sm" id="lay-face"
@@ -148,7 +148,7 @@
        says where this orientation is weak. A printed part splits across its layers,
        so orientation IS strength -- this makes that visible as you rotate. -->
   <div class="layerview">
-    <label class="check layers-toggle" title="Show the horizontal print layers around the part.">
+    <label class="check layers-toggle" data-i18n-title title="Show the horizontal print layers around the part.">
       <input type="checkbox" id="show-layers"><span data-i18n="Show layers">Show layers</span>
     </label>
     <!-- The rings cover the part on a small screen (#53). Off hides them; the
@@ -274,7 +274,7 @@
          for a tippy or tall part, at the cost of more marks on the supported face.
          Shown only when Tines is on. -->
     <label class="fld" id="tinegrip-fld"
-           title="How tightly to space the grip tines. Light = fewest marks (default), a per-wall floor keeps grip; Firm = dense comb / max grip for a tippy or tall part.">
+           data-i18n-title title="How tightly to space the grip tines. Light = fewest marks (default), a per-wall floor keeps grip; Firm = dense comb / max grip for a tippy or tall part.">
       <span><span data-i18n="Tine grip">Tine grip</span> <span class="mut"><span data-i18n="light">light</span> ⟶ <span data-i18n="firm">firm</span></span></span>
       <input type="range" id="tine-density" min="0" max="100" step="5" value="0">
     </label>
@@ -282,7 +282,7 @@
          clean bead and BEND off instead of tearing. That only holds if this matches
          the layer height you actually slice at -- set it wrong and the tines slice
          into ~1.5 layers and leave welts. Shown only when Tines is on. -->
-    <label class="fld row" id="layerh-fld" title="Set this to the layer height you slice at. The grip tines are one layer tall so they snap off clean; if this doesn't match your slicer, the tines tear and leave marks. Default 0.2mm.">
+    <label class="fld row" id="layerh-fld" data-i18n-title title="Set this to the layer height you slice at. The grip tines are one layer tall so they snap off clean; if this doesn't match your slicer, the tines tear and leave marks. Default 0.2mm.">
       <span><span data-i18n="Layer height">Layer height</span> <span class="mut">mm</span></span>
       <input type="number" id="layer-height" min="0.08" max="0.6" step="0.04" value="0.2">
     </label>
@@ -390,12 +390,12 @@
          to print in a material that won't bond to the part (PETG under PLA). Flat
          contacts only by default: on a tilted underside the band climbs every layer,
          and PETG wouldn't print on the narrow PLA tip (a 35deg cube). -->
-    <label class="fld row" title="For a printer with two or more toolheads. The top layer of a wall exports as its own part of the supports, shown purple: give it a material that won't bond to the part (PETG under PLA) for a clean release. Flat contacts: only under flat undersides, where it works and costs a few tool changes. Everywhere: every wall top and the tines too, a tool change every layer on a tilted part. 3MF only.">
-      Interface material
+    <label class="fld row" data-i18n-title title="For a printer with two or more toolheads. The top layer of a wall exports as its own part of the supports, shown purple: give it a material that won't bond to the part (PETG under PLA) for a clean release. Flat contacts: only under flat undersides, where it works and costs a few tool changes. Everywhere: every wall top and the tines too, a tool change every layer on a tilted part. 3MF only.">
+      <span data-i18n="Interface material">Interface material</span>
       <select id="iface">
-        <option value="off">Off</option>
-        <option value="flat">Flat contacts</option>
-        <option value="all">Everywhere</option>
+        <option value="off" data-i18n="Off">Off</option>
+        <option value="flat" data-i18n="Flat contacts">Flat contacts</option>
+        <option value="all" data-i18n="Everywhere">Everywhere</option>
       </select>
     </label>
     <!-- Wide-face row density: an overhang face too wide for one corner brace gets a
@@ -419,7 +419,7 @@
          shown via ui/remove.js syncRemoveUI): arm a click-to-remove mode, hover lights a
          fin red, click drops just that one; Restore all brings every one back. -->
     <button data-i18n-title class="btn sm" id="augment-toggle" hidden
-            title="Place extra breakaway walls by hand, on top of the auto-placed ones.">+ Add walls by hand</button>
+            data-i18n-title title="Place extra breakaway walls by hand, on top of the auto-placed ones.">+ Add walls by hand</button>
     <div id="remove-fins-controls" hidden>
       <div class="draw-btns">
         <button class="btn sm" id="remove-fins-toggle" hidden
@@ -437,7 +437,7 @@
        localStorage (optional). -->
   <details class="sec" data-sec="display">
     <summary><span class="sec-title" data-i18n="Display">Display</span><span class="sec-sum" id="sum-display"></span></summary>
-    <label class="check" title="Shade overhangs too small for a fin amber, with a card saying they print unsupported. Off drops the highlight and the card; the readout still counts them.">
+    <label class="check" data-i18n-title title="Shade overhangs too small for a fin amber, with a card saying they print unsupported. Off drops the highlight and the card; the readout still counts them.">
       <input type="checkbox" id="highlight-small" checked><span data-i18n="Highlight small overhangs">Highlight small overhangs</span>
     </label>
   </details>
@@ -473,7 +473,7 @@
     <span id="r-grams">—</span>
     <span class="r-unit" data-i18n="of support material added">of support material added</span>
     <button type="button" class="r-info" id="r-info" aria-label="About this number"
-       title="Grams assume PLA and count only the fins + pad the tool adds, printed near-solid, cross-checked against the builder's fin volume. In test prints, breakaway fins used 20–45% less plastic and printed ~30% faster than slicer supports.">i</button>
+       data-i18n-title title="Grams assume PLA and count only the fins + pad the tool adds, printed near-solid, cross-checked against the builder's fin volume. In test prints, breakaway fins used 20–45% less plastic and printed ~30% faster than slicer supports.">i</button>
   </div>
 </aside>
 </div><!-- /right-rail -->
@@ -526,15 +526,15 @@
      only when a file has more than one object; single-object files skip it. -->
 <div id="picker" hidden>
   <div class="picker-panel" role="dialog" aria-modal="true" aria-labelledby="picker-title">
-    <h2 id="picker-title">This file has several objects</h2>
-    <p class="picker-sub">Pick the one to add fins to. Check more than one to merge
+    <h2 id="picker-title" data-i18n="This file has several objects">This file has several objects</h2>
+    <p class="picker-sub" data-i18n="Pick the one to add fins to. Check more than one to merge them into a single part.">Pick the one to add fins to. Check more than one to merge
       them into a single part.</p>
     <ul id="picker-list"></ul>
     <div class="picker-foot">
       <span id="picker-hint" class="note"></span>
       <span class="picker-actions">
-        <button class="btn" id="picker-cancel">Cancel</button>
-        <button class="btn primary" id="picker-load">Load</button>
+        <button class="btn" id="picker-cancel" data-i18n="Cancel">Cancel</button>
+        <button class="btn primary" id="picker-load" data-i18n="Load">Load</button>
       </span>
     </div>
   </div>

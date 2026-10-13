@@ -129,7 +129,7 @@ function pickObjects(objects) {
     const meta = document.createElement('span');
     meta.className = 'pk-meta';
     const s = o.bbox.size.map((v) => Math.round(v));
-    meta.textContent = `${o.tris.toLocaleString()} tris · ${s[0]}×${s[1]}×${s[2]} mm`;
+    meta.textContent = `${o.tris.toLocaleString()} ${t('tris')} · ${s[0]}×${s[1]}×${s[2]} mm`;
     label.append(cb, name, meta);
     li.append(label);
     list.append(li);
@@ -140,8 +140,8 @@ function pickObjects(objects) {
   function refresh() {
     const n = selected().length;
     loadBtn.disabled = n === 0;
-    loadBtn.textContent = n > 1 ? `Merge ${n} & load` : 'Load';
-    hint.textContent = n > 1 ? `${n} selected — merged into one part` : '';
+    loadBtn.textContent = n > 1 ? t('Merge {n} & load', { n }) : t('Load');
+    hint.textContent = n > 1 ? t('{n} selected — merged into one part', { n }) : '';
   }
   refresh();
   modal.hidden = false;
@@ -270,7 +270,7 @@ async function cutChosen(chosen) {
 async function parseStep(buffer) {
   const spinner = el('spinner');
   const label = spinner.lastChild.textContent;
-  spinner.lastChild.textContent = 'reading STEP…';
+  spinner.lastChild.textContent = t('reading STEP…');
   spinner.classList.add('show');
   let objects;
   try {

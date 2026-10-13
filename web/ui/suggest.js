@@ -200,8 +200,8 @@ el('suggest-orient').addEventListener('click', () => {
     const tog = el('suggest-toggle');
     tog.hidden = false;
     tog.setAttribute('aria-expanded', 'true');
-    tog.setAttribute('aria-label', 'Collapse suggestions');
-    tog.title = 'Collapse';
+    tog.setAttribute('aria-label', t('Collapse suggestions'));
+    tog.title = t('Collapse');
     el('suggest-body').hidden = false;
     if (!candidates.length || confidence === 'none') {
       el('suggest-list').hidden = true;
@@ -235,8 +235,8 @@ el('suggest-toggle').addEventListener('click', () => {
   const open = tog.getAttribute('aria-expanded') !== 'false';
   const next = !open;
   tog.setAttribute('aria-expanded', String(next));
-  tog.setAttribute('aria-label', next ? 'Collapse suggestions' : 'Show suggestions');
-  tog.title = next ? 'Collapse' : 'Show';
+  tog.setAttribute('aria-label', next ? t('Collapse suggestions') : t('Show suggestions'));
+  tog.title = next ? t('Collapse') : t('Show');
   el('suggest-body').hidden = !next;
 });
 

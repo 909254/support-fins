@@ -280,7 +280,7 @@ export function shade() {
   // appends to this line, and the mode / bed-pad / toggle handlers call
   // refreshFins() WITHOUT going through shade(), so appending in place stacked
   // up "· fins 3 ms · fins 3 ms · fins 3 ms" with every toggle.
-  analysisTiming = `${ms.toFixed(0)} ms · weld ${weldMs.toFixed(0)} ms`;
+  analysisTiming = `${ms.toFixed(0)} ms · ${t('weld')} ${weldMs.toFixed(0)} ms`;
   el('s-time').textContent = analysisTiming;
 
   lastResult = res;
