@@ -216,3 +216,9 @@ no stress models needed):
 
 See `docs/FIN-SPEC.md` for the spec these encode. `prototype/stress/run.js` is the
 broader sweep (all models × poses) for eyeballing; this suite is the pass/fail gate.
+
+`sway_depth.test.js` verifies the optional full-depth percentage on metre-high
+braces, unchanged capped/short geometry, expanded-foot collisions with the part
+and existing supports, collision-limited height/depth, real Auto worker on/off
+requests, removal ownership and STL/component-3MF export with interface tags.
+Full brace depth starts off in the browser; legacy goldens stay unchanged.

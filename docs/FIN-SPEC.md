@@ -275,3 +275,21 @@ a mess"), and a 45° cleat sole needs walls down its slope that cross the one al
 
 Slant3D says "grip fins" once. Unrelated to the *grip fin* used elsewhere in Matthew's
 CAD work (a tolerance-absorbing feature for mating holes). Don't collide the terms.
+
+## Optional full Sway depth
+
+The browser's **Full brace depth** defaults off. Without `uncappedDepth: true`,
+the bed depth stays `max(minDepth, min(maxDepth, reach * H))`, where `maxDepth`
+remains 60 mm. Opt-in uses `max(minDepth, reach * H)` instead; `reach` retains
+its 5–50% bounds and `H` is the actual collision-limited brace height. The depth
+is recomputed whenever a model collision lowers the rib. Top depth, thickness,
+foot padding, tine geometry and minimum grip are unchanged.
+
+Auto worker requests and hand-placed Sway both carry the option. Existing
+part, foot, brace-to-brace and brace-to-wall checks still apply to the expanded
+footprint. A selected depth is not a promise that every position can accept it.
+The user must check build-volume fit and sliced geometry. Larger bases consume
+more space and material and have not been physically validated for metre-high
+prints. Undo/redo and saved 3MF sessions retain the setting; plugin dialogs keep
+their established capped defaults. This feature needs neither nozzle profiles
+nor the Draw worker/CPU changes.

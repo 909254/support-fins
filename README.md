@@ -51,6 +51,15 @@ Still open: scale-aware fin profiles, and the bed pad on tilted exports.
 
 ### Sway braces for tall parts
 
+**Full brace depth** is an optional checkbox under Sway. It starts off, keeping
+the usual 60 mm depth limit. On, **Brace depth** uses its selected 5–50% of the
+actual brace height beyond that limit: a 999 mm brace at 15% reaches about 150 mm.
+The wider foot needs more plate space and material; model/support collisions can
+still shorten or refuse a brace. Check the build-volume preview and sliced first
+layers. Thickness, contact tines and grip rules are unchanged; deeper metre-high
+braces have not been physically print-tested. Undo/redo and 3MF sessions retain
+the checkbox. Direct callers opt in with `sway: { on: true, uncappedDepth: true }`.
+
 Tall, slender parts have a problem the fins were never built for: nothing overhangs, but
 as the part grows, the nozzle's drag and each layer shrinking as it cools push the top
 around. The part drifts, sags or wobbles, and every movement shows up as a layer line.

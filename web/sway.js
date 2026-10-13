@@ -109,6 +109,7 @@ function settings(opts = {}) {
     gripFrom: Math.max(0, num(opts.gripFrom, 0)),
     spacing: Math.max(1, num(opts.tineSpacing, SWAY.tineSpacing)),
     reach: Math.max(0.05, Math.min(0.5, num(opts.reach, SWAY.reach))),
+    uncappedDepth: opts.uncappedDepth === true,
     // Auto refuses a brace that would stand a long way up before its first tine;
     // a brace placed BY HAND is built anyway and reports the stilt instead. The
     // tool suggests, the person decides -- the same split as the rest of the app.
@@ -272,7 +273,7 @@ export function buildSwayRib(p, uc, partTris, topo, rot, offset, opts = {}) {
     const a = fr.sOf(patchPoint(p, wIn, uc, tAtZ(p, wIn, 0)));
     const b = fr.sOf(patchPoint(p, wIn, uc, tAtZ(p, wIn, 1)));
     sIn0 = a; sInSlope = b - a;
-    D0 = Math.max(SWAY.minDepth, Math.min(SWAY.maxDepth, S.reach * H));
+    D0 = Math.max(SWAY.minDepth, S.uncappedDepth ? S.reach * H : Math.min(SWAY.maxDepth, S.reach * H));
   };
   const sIn = (z) => sIn0 + sInSlope * z;
   const depthAt = (z) => D0 + (SWAY.topDepth - D0) * Math.min(1, Math.max(0, z / H));
