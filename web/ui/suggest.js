@@ -50,13 +50,13 @@ let suggestCurBore = 0;
 function noSupportVerdict(c) {
   if (c.regions === 0) {
     const rough = c.holes ?? 0;
-    const roughCaveat = rough ? ` One small spot may print a bit rough.` : '';
+    const roughCaveat = rough ? ` ${t('One small spot may print a bit rough.')}` : '';
     // The suggester ranks for printability, not strength (it can't know the load).
     // If this pose also stands the part's long axis up the layers, that's the weak
     // print direction, so add a heads-up and point at the Strength arrow.
     const lv = c.size ? layerVerdict(c.size) : null;
     const strengthCaveat = lv?.posture === 'weak'
-      ? ` It prints tall, though, the weaker direction, so check the Strength arrow if it bears a load.`
+      ? ` ${t('It prints tall, though, the weaker direction, so check the Strength arrow if it bears a load.')}`
       : '';
     return { tier: 'free', badge: t('No support'),
       note: `${t('This way up it needs no fins, 0 g.')}${roughCaveat}${strengthCaveat}` };
@@ -64,8 +64,8 @@ function noSupportVerdict(c) {
   if ((c.bore ?? 0) === 0 && suggestCurBore > 0) {
     const grams = (c.volume ?? 0) * materialDensity / 1000;
     return { tier: 'holeclean', badge: t('Bores clean'),
-      note: `This way up the bores point up, so there's no support to pull out of a hole `
-          + `(${fmtGrams(grams)} g of fins, all on the outside).` };
+      note: t("This way up the bores point up, so there's no support to pull out of a hole ({grams} g of fins, all on the outside).",
+        { grams: fmtGrams(grams) }) };
   }
   return null;
 }

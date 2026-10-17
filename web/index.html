@@ -80,7 +80,7 @@
 <!-- Long-build spinner: revealed by a 1s timer while a support build runs in the
      worker, hidden the moment it lands, so a quick rebuild never flashes it.
      Purely informational; pointer-events:none lets clicks pass to the canvas. -->
-<div id="spinner" aria-live="polite"><span class="ring"></span>generating supports…</div>
+<div id="spinner" aria-live="polite"><span class="ring"></span><span data-i18n="generating supports…">generating supports…</span></div>
 
 <header id="topbar">
   <span class="brand"><img src="favicon.svg" alt="" class="brand-mark"><span class="brand-text">Support&nbsp;Fins</span></span>
@@ -153,6 +153,7 @@
     <div class="menu" id="lang-menu" role="menu" hidden>
       <button role="menuitem" id="lang-opt-en">English</button>
       <button role="menuitem" id="lang-opt-de">Deutsch</button>
+      <button role="menuitem" id="lang-opt-zh">简体中文</button>
       <button role="menuitem" id="lang-opt-pt">Português</button>
       <button role="menuitem" id="lang-opt-ar">العربية</button>
       <button role="menuitem" id="lang-opt-nl">Nederlands</button>
@@ -364,7 +365,7 @@
       <div class="draw-btns">
         <button class="btn sm" id="remove-fins-toggle" hidden data-search="Remove fins"
                 data-i18n-title title="Click a fin to remove just that one. Esc or right-click cancels."><span data-i18n="Remove fins">Remove fins</span></button>
-        <button class="btn sm" id="restore-fins" hidden
+        <button class="btn sm" id="restore-fins" hidden data-i18n-title
                 title="Bring back every fin removed in this orientation."><span data-i18n="Restore all">Restore all</span></button>
       </div>
     </div>
@@ -376,7 +377,7 @@
   <div id="draw-controls" hidden>
     <p class="draw-hint" id="draw-hint" data-i18n-html="Click an <strong>overhang face</strong> — it lights up green when a fin can go there — to stand a support fin against it.">Click an <strong>overhang face</strong> — it lights up green when a fin can go there — to stand a support fin against it.</p>
     <div class="draw-btns">
-      <button class="btn sm" id="draw-remove" hidden
+      <button class="btn sm" id="draw-remove" hidden data-i18n-title
               title="Remove the support you clicked (Delete or Backspace also works)."><span data-i18n="Remove selected">Remove selected</span></button>
       <button class="btn sm" id="draw-clear"><span data-i18n="Clear all">Clear all</span></button>
     </div>
@@ -406,19 +407,19 @@
         </select>
       </label>
       <label data-i18n-title class="fld row" data-pad-custom hidden title="How tall the pad is. Only the first layer grips the plate; more layers make it stiffer and harder to peel.">
-        <span>Pad thickness <span class="mut">mm</span></span>
+        <span><span data-i18n="Pad thickness">Pad thickness</span> <span class="mut">mm</span></span>
         <input type="number" id="pad-h" min="0.1" max="1.0" step="0.05" value="0.2">
       </label>
       <label class="fld row" data-pad-custom hidden data-i18n-title title="Sideways clearance between the pad and the part's first layer. 0.12mm lets first-layer squish just close it, the way a slicer brim holds; bigger comes off easier and holds less. Under 0.1mm most slicers merge the gap and the pad welds on. 0 = no gap (Pad grip decides).">
-        <span>Pad gap <span class="mut">mm</span></span>
+        <span><span data-i18n="Pad gap">Pad gap</span> <span class="mut">mm</span></span>
         <input type="number" id="pad-gap" min="0" max="0.5" step="0.01" value="0.12">
       </label>
       <label data-i18n-title class="fld row" data-pad-custom hidden title="Where the pad meets the part's underside. Positive bites in to hold harder; 0 is flush; negative leaves a gap that snaps off cleaner.">
-        <span>Pad grip <span class="mut">mm</span></span>
+        <span><span data-i18n="Pad grip">Pad grip</span> <span class="mut">mm</span></span>
         <input type="number" id="pad-grip" min="-0.2" max="0.3" step="0.05" value="0">
       </label>
       <label data-i18n-title class="fld row" data-pad-custom hidden title="How far the pad spreads past the part's contact with the plate. More spread = more plate grip.">
-        <span>Pad spread <span class="mut">mm</span></span>
+        <span><span data-i18n="Pad spread">Pad spread</span> <span class="mut">mm</span></span>
         <input type="number" id="pad-margin" min="1" max="12" step="0.5" value="4">
       </label>
       <!-- Wall lines (web/nozzle.js, after #210): lines across a wall, for a tall part
@@ -442,15 +443,15 @@
       <label data-i18n-title class="check" title="Stand tapered buttress ribs against the upright sides of a tall part, tied on with tines all the way up, so it doesn't drift or wobble as it grows. In Draw, click an upright side to add one.">
         <input type="checkbox" id="sway"><span data-i18n="Sway braces">Sway braces</span>
       </label>
-      <label class="fld row" id="sway-from-fld" title="Height the brace tines start at. 0 = grip the whole height; raise it to tie on only above where the part starts to move.">
+      <label data-i18n-title class="fld row" id="sway-from-fld" title="Height the brace tines start at. 0 = grip the whole height; raise it to tie on only above where the part starts to move.">
         <span><span data-i18n="Brace grip from">Brace grip from</span> <span class="mut" data-i18n="mm up">mm up</span></span>
         <input type="number" id="sway-from" min="0" max="2000" step="5" value="0">
       </label>
-      <label class="fld row" id="sway-spacing-fld" title="Vertical distance between brace tines. Smaller = held tighter, more marks on the side. Default 6mm.">
+      <label data-i18n-title class="fld row" id="sway-spacing-fld" title="Vertical distance between brace tines. Smaller = held tighter, more marks on the side. Default 6mm.">
         <span><span data-i18n="Brace tine spacing">Brace tine spacing</span> <span class="mut">mm</span></span>
         <input type="number" id="sway-spacing" min="2" max="30" step="1" value="6">
       </label>
-      <label class="fld row" id="sway-depth-fld" title="How far the brace reaches out at the bed, as a share of its height. Deeper = stiffer, more plastic. Default 15%.">
+      <label data-i18n-title class="fld row" id="sway-depth-fld" title="How far the brace reaches out at the bed, as a share of its height. Deeper = stiffer, more plastic. Default 15%.">
         <span><span data-i18n="Brace depth">Brace depth</span> <span class="mut" data-i18n="% of height">% of height</span></span>
         <input type="number" id="sway-depth" min="5" max="50" step="1" value="15">
       </label>

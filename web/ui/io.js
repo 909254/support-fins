@@ -305,11 +305,11 @@ async function parseStep(buffer) {
     chosen = await pickObjects(objects);
     if (!chosen) return null;
   }
-  const notes = ['tessellated at 0.01 mm'];
+  const notes = [t('tessellated at 0.01 mm')];
   if (objects.length > 1) {
     notes.unshift(chosen.length === 1
-      ? `imported “${chosen[0].name}” of ${objects.length} objects`
-      : `merged ${chosen.length} of ${objects.length} objects into one part`);
+      ? t('imported “{name}” of {total} objects', { name: chosen[0].name, total: objects.length })
+      : t('merged {n} of {total} objects into one part', { n: chosen.length, total: objects.length }));
   }
   importNote = `STEP: ${notes.join('; ')}.`;
   return geometryFromPositions(mergeObjectPositions(chosen));
@@ -326,8 +326,8 @@ async function parseObj(buffer) {
   }
   if (objects.length > 1) {
     importNote = chosen.length === 1
-      ? `OBJ: imported “${chosen[0].name}” of ${objects.length} objects.`
-      : `OBJ: merged ${chosen.length} of ${objects.length} objects into one part.`;
+      ? `OBJ: ${t('imported “{name}” of {total} objects', { name: chosen[0].name, total: objects.length })}.`
+      : `OBJ: ${t('merged {n} of {total} objects into one part', { n: chosen.length, total: objects.length })}.`;
   }
   return geometryFromPositions(mergeObjectPositions(chosen));
 }

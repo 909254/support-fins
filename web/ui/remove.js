@@ -105,7 +105,7 @@ export function syncRemoveUI() {
   el('remove-fins-controls').hidden = !show;
   el('remove-fins-toggle').hidden = !show;
   el('remove-fins-toggle').classList.toggle('primary', removeMode);
-  el('remove-fins-toggle').textContent = removeMode ? 'Click a fin — Esc done' : t('Remove fins');
+  el('remove-fins-toggle').textContent = t(removeMode ? 'Click a fin — Esc done' : 'Remove fins');
   // Gate on removedIds (fins removed in THIS orientation), not the global
   // removedSigs -- otherwise a removal made in another pose shows a Restore button
   // that maps to nothing here (and whose tooltip promises "this orientation").

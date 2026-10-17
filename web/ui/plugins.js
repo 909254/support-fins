@@ -101,7 +101,7 @@ const PLUGINS = [
   {
     name: 'Onshape', needs: 'custom feature (its own port of the engine)',
     link: 'https://cad.onshape.com/documents/607917e8e297a68eb42cfb58',
-    linkText: t('Open in Onshape'),
+    linkText: 'Open in Onshape',
     guide: `https://raw.githubusercontent.com/${REPO}/main/plugins/onshape/SupportFins_User_Guide.pdf`,
     install: 'Any Part Studio ▸ Custom features ▸ Add custom features ▸ Fin Supports document ▸ Support-Fins FS, then select the part.',
   },
@@ -181,7 +181,7 @@ function render() {
       go.href = p.link;
       go.target = '_blank';
       go.rel = 'noopener';
-      go.textContent = p.linkText;
+      go.textContent = t(p.linkText);
     } else if (file) {
       go.href = DOWNLOAD + file;
       go.textContent = t('Download');
@@ -272,4 +272,8 @@ document.addEventListener('pointerdown', (e) => {
 });
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && !panel.hidden) { setOpen(false); btn.focus(); }
+});
+window.addEventListener('languagechange', () => {
+  for (const [key, text] of COMPUTERS) computer.querySelector(`option[value="${key}"]`).textContent = t(text);
+  render();
 });

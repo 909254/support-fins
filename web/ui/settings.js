@@ -45,11 +45,11 @@ const COVER_TIP_FULL = 'Full coverage supports every overhang a wall can reach, 
 let coverTip = null;
 export function syncCoverageUI() {
   const fld = el('coverage-fld'), full = finMode === 'full';
-  coverTip ??= fld.title;
+  coverTip ??= (fld.dataset.origTitle ??= fld.title);
   fld.hidden = !autoLike();
   el('coverage').disabled = full;
   fld.classList.toggle('disabled', full);
-  fld.title = full ? COVER_TIP_FULL : coverTip;
+  fld.title = t(full ? COVER_TIP_FULL : coverTip);
   el('long-walls-fld').hidden = !full;   // Full coverage's own (fins/rows.js)
   syncMore();   // coverage counts as changed only while the build reads it
 }
@@ -394,4 +394,4 @@ export function initSettings() {
   fitWallLines();
 }
 
-window.addEventListener('languagechange', () => { if (typeof syncSectionSums === "function") syncSectionSums(); el('fins-toggle').textContent = finsVisible ? t('Fins on') : t('Add fins'); el('augment-toggle').textContent = drawAugment ? t('Done adding walls') : t('+ Add walls by hand'); });
+window.addEventListener('languagechange', () => { syncCoverageUI(); if (typeof syncSectionSums === "function") syncSectionSums(); el('fins-toggle').textContent = finsVisible ? t('Fins on') : t('Add fins'); el('augment-toggle').textContent = drawAugment ? t('Done adding walls') : t('+ Add walls by hand'); });
