@@ -383,7 +383,7 @@ export function updateFit() {
   const over = dx > v.x || dy > v.y || dz > v.z;
   const fit = el('s-fit');
   fit.textContent = over
-    ? (added.length ? 'does not fit (with fins)' : 'does not fit')
+    ? t(added.length ? 'does not fit (with fins)' : 'does not fit')
     : t('fits');
   fit.classList.toggle('warn', over);
 }
