@@ -17,7 +17,8 @@ const topoOf = (...boxes) => {
   return buildTopology({ getAttribute: (k) => (k === 'position' ? { array: pos } : null) });
 };
 // a 0.6-layer tine at the origin biting +Y: reach 1.5, so the old far probe sat at 3.0
-const ends = (topo) => kissEnds(topo, I, O, 0, 0, 0, 1, 4.6, 5.2, { half: 0.25, back: 0.3, reach: 1.5 });
+const ends = (topo, opts = {}) => kissEnds(topo, I, O, 0, 0, 0, 1, 4.6, 5.2,
+  { half: 0.25, back: 0.3, reach: 1.5, ...opts });
 const all = (e) => [...e.bot, ...e.top];
 
 Deno.test('kissEnds: a part thinner than the far probe still stops the tine at its face', () => {
@@ -28,6 +29,20 @@ Deno.test('kissEnds: a part thinner than the far probe still stops the tine at i
 Deno.test('kissEnds: a thin near piece stops the tine, not a block beyond it', () => {
   // a 0.2 slab at y 0.5, then a block from y 2: the old far probe found the block
   for (const d of all(ends(topoOf([-5, 5, 0.5, 0.7, 0, 10], [-5, 5, 2, 10, 0, 10])))) assertClose(d, 0.51, 1e-3, 'end');
+});
+
+Deno.test('kissEnds: contact offset leaves a gap, is flush, or bites at the first surface', () => {
+  for (const topo of [topoOf([-5,5,0.5,10,0,10]), topoOf([-5,5,0.5,0.7,0,10],[-5,5,2,10,0,10])]) {
+    for (const [contactOffset,want] of [[-0.1,0.6],[0,0.5],[0.1,0.4],[-1,0.7],[1,0.3],[NaN,0.51]]) {
+      for (const d of all(ends(topo,{contactOffset}))) assertClose(d,want,1e-3,'offset');
+    }
+    assert(JSON.stringify(ends(topo))===JSON.stringify(ends(topo,{contactOffset:-0.01})), 'default changed');
+  }
+  const bare=topoOf([-5,5,4,10,0,10]), behind=topoOf([-5,5,-1,10,0,10]);
+  for (const contactOffset of [-0.2,0,0.2]) {
+    for (const d of all(ends(bare,{contactOffset}))) assertClose(d,1.5,1e-9,'no surface');
+    for (const d of all(ends(behind,{contactOffset}))) assertClose(d,-0.25,1e-9,'root bound');
+  }
 });
 
 Deno.test('kissEnds: no solid within reach keeps the full reach; solid behind the seed pulls back', () => {

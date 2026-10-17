@@ -43,6 +43,40 @@ Deno.test('tunables: the PETG profile reaches the build as PETG numbers', () => 
   }
 });
 
+Deno.test('tunables: tall rib heights are finite positive millimeters within the control range', () => {
+  const before = prop.BRACE.tallH;
+  try {
+    fins.applyTunables({ tallRibsHeight: 80 });
+    assert(prop.BRACE.tallH === 80, 'height reaches the shared brace configuration');
+    for (const height of [undefined, NaN, Infinity, -Infinity, null, '80', 0, -10]) {
+      fins.applyTunables({ tallRibsHeight: height });
+      assert(prop.BRACE.tallH === 80, `invalid height changed the threshold: ${height}`);
+    }
+    fins.applyTunables({ tallRibsHeight: 0.5 });
+    assert(prop.BRACE.tallH === 1, 'positive height clamps to the minimum');
+    fins.applyTunables({ tallRibsHeight: 3000 });
+    assert(prop.BRACE.tallH === 2000, 'height clamps to the maximum');
+  } finally { fins.applyTunables({ tallRibsHeight: before }); }
+});
+
+Deno.test('tunables: tine contact offsets accept zero and both signs and clamp to the control range', () => {
+  const before = prop.PROP.tineContactOffset;
+  try {
+    for (const value of [-0.12, 0, 0.12]) {
+      fins.applyTunables({ tineContactOffset: value });
+      assert(prop.PROP.tineContactOffset === value, `contact offset not applied: ${value}`);
+    }
+    for (const value of [undefined, NaN, Infinity, -Infinity, null, '0.1']) {
+      fins.applyTunables({ tineContactOffset: value });
+      assert(prop.PROP.tineContactOffset === 0.12, `invalid offset changed the setting: ${value}`);
+    }
+    fins.applyTunables({ tineContactOffset: -1 });
+    assert(prop.PROP.tineContactOffset === -0.2);
+    fins.applyTunables({ tineContactOffset: 1 });
+    assert(prop.PROP.tineContactOffset === 0.2);
+  } finally { fins.applyTunables({ tineContactOffset: before }); }
+});
+
 Deno.test('tunables: absent or junk values leave the defaults alone', () => {
   const snap = () => [fins.FIN.padH, fins.PAD.grab, prop.PROP.gap];
   const before = snap();

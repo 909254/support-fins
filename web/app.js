@@ -264,6 +264,11 @@ if (langBtn && langMenu) {
     langMenu.hidden = true;
     langBtn.setAttribute('aria-expanded', 'false');
   });
+  document.getElementById('lang-opt-zh')?.addEventListener('click', () => {
+    setLanguage('zh');
+    langMenu.hidden = true;
+    langBtn.setAttribute('aria-expanded', 'false');
+  });
   document.getElementById('lang-opt-pt')?.addEventListener('click', () => {
     setLanguage('pt');
     langMenu.hidden = true;

@@ -38,6 +38,8 @@ const SITE_ONLY_CHOICES = { padStyle: ['custom'] };
 // fails the test below until it is added to the schema or listed here.
 const SITE_EXCLUDED = {
   'full-brace-depth': 'browser opt-in; plugin dialogs retain the established 60 mm Sway depth limit',
+  'sway-cross-height': 'browser sway cross-ribs only; plugin dialogs retain the default rib height ratio',
+  'tine-contact-offset': 'browser tine contact calibration; plugin dialogs retain the default contact offset',
   'long-walls': 'Full coverage only; plugins run Auto',
   'tall-ribs': 'the plugins build with the engine default (on, as the site starts); a dialog control can follow',
   'file': 'loading a model is the host\'s job', 'volume': 'site build-volume preview',
