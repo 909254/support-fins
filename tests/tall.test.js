@@ -90,4 +90,66 @@ Deno.test('tall: a drawn wall over tallH gets face ribs with braceTall, none wit
   assert(plain.ok && ribbed.ok, 'both walls build');
   assert(!plain.braces, 'no ribs unless asked');
   assert(ribbed.braces === 2, `one face pair on a 40 mm wall: ${ribbed.braces}`);
+  const before = BRACE.tallH;
+  try {
+    for (const [height, expected] of [[120, 0], [80, 2], [100, 2]]) {
+      fins.applyTunables({ tallRibsHeight: height });
+      const wall = drawnWall(at(20, 10), at(60, 10), part, 0, { braceTall: true });
+      assert(wall.ok, `wall builds at threshold ${height} mm`);
+      assert((wall.braces ?? 0) === expected, `threshold ${height} mm: ${wall.braces} ribs`);
+    }
+  } finally { fins.applyTunables({ tallRibsHeight: before }); }
+});
+
+Deno.test('tall: drawn walls just over a 1 cm threshold get ribs on both faces', () => {
+  const before = BRACE.tallH;
+  try {
+    for (const h of [10.5, 11, 12, 12.7]) {
+      const tris = [];
+      box(-10, 50, -20, 20, h, h + 2, tris);
+      const part = Float64Array.from(tris);
+      const a = [0, 0, h], b = [40, 0, h];
+      fins.applyTunables({ tallRibsHeight: 10 });
+      const ribbed = drawnWall(a, b, part, 0, { braceTall: true });
+      const off = drawnWall(a, b, part, 0, { braceTall: false });
+      fins.applyTunables({ tallRibsHeight: 100 });
+      const higher = drawnWall(a, b, part, 0, { braceTall: true });
+      assert(ribbed.ok && off.ok && higher.ok, `all walls build at ${h} mm`);
+      assert(ribbed.height > 10 && ribbed.braces === 2, `a ${ribbed.height} mm wall gets two ribs`);
+      assert(!off.braces && !higher.braces, 'off and the default threshold leave the wall plain');
+      assert(ribbed.tris.length > off.tris.length, 'rib geometry is included in the drawn mesh');
+      const ribs = bbox(ribbed.tris.slice(off.tris.length));
+      assert(ribs[1] < 0 && ribs[4] > 0, 'ribs cross the wall on both faces');
+      assert(ribs[2] >= 0 && ribs[5] < h - PROP.gap - PROP.tipH, 'the tip and bed clearance stay intact');
+      assert(off.tris.length === higher.tris.length, 'a higher threshold removes only the ribs');
+    }
+  } finally { fins.applyTunables({ tallRibsHeight: before }); }
+});
+
+Deno.test('tall: Auto also braces a low wall when the threshold is 1 cm', () => {
+  const before = BRACE.tallH;
+  try {
+    const s = shelf(11);
+    const lower = build(s, { tunables: { tallRibsHeight: 10 } });
+    const higher = build(s, { tunables: { tallRibsHeight: 100 } });
+    assert(lower.tallRibs > 0, 'Auto builds ribs just above 10 mm');
+    assert(higher.tallRibs === 0, 'the default threshold leaves low walls plain');
+    assert(lower.triangles.length > higher.triangles.length, 'Auto includes the ribs in its mesh');
+  } finally { fins.applyTunables({ tallRibsHeight: before }); }
+});
+
+Deno.test('tall: build tunables control the reinforcement height and preserve the off switch', () => {
+  const before = BRACE.tallH;
+  try {
+    const s = shelf(60);
+    const lower = build(s, { tunables: { tallRibsHeight: 50 } });
+    const higher = build(s, { tunables: { tallRibsHeight: 100 } });
+    const lowerAgain = build(s, { tunables: { tallRibsHeight: 50 } });
+    const off = build(s, { tallRibs: false, tunables: { tallRibsHeight: 50 } });
+    assert(lower.tallRibs > 0, `50 mm threshold adds ribs: ${lower.tallRibs}`);
+    assert(higher.tallRibs === 0, '100 mm threshold leaves the 60 mm walls plain');
+    assert(lowerAgain.tallRibs === lower.tallRibs, 'each request applies its own threshold');
+    assert(off.tallRibs === undefined, 'unticking reinforcement still disables the pass');
+    assert(lower.triangles.length > higher.triangles.length, 'lower threshold adds rib geometry');
+  } finally { fins.applyTunables({ tallRibsHeight: before }); }
 });

@@ -122,8 +122,33 @@ Deno.test('sway: Draw stands a brace on an upright side, and refuses the roof', 
   assert(!sway.faceIsUpright(topo, ID, roof), 'the roof should not read as upright');
   const r = sway.swayAtFace(topo, res, ID, side, [0, -15, 60], { tines: true, layerHeight: LAYER });
   assert(r.ok, `hand brace failed: ${r.reason}`);
-  assert(r.height > 100, `hand brace only ${r.height}mm tall on a 150mm side`);
+  assert(Math.abs(r.height - 60) < 1e-6, `hand brace exceeds or misses the clicked height: ${r.height}`);
   assert(isClosed(r.tris), 'hand brace is not closed');
+});
+
+Deno.test('sway: Draw caps the entire brace at the clicked height through rebuilding and rotation', () => {
+  const { topo, res } = post();
+  const side = Array.from({ length: topo.nFaces }, (_, i) => i).find((i) => topo.nrm[i * 3 + 1] < -0.9);
+  const opts = { tines: true, layerHeight: LAYER, crossAbove: 10, crossRise: 0.9 };
+  for (const z of [20, 60.13, 100, 150]) {
+    const point = [0, -15, z];
+    const r = sway.swayAtFace(topo, res, ID, side, point, opts);
+    assert(r.ok, r.reason);
+    assert(r.height <= z && r.tris.every((v) => v[2] <= z + 1e-9), 'a body, tine or cross rib exceeds the click');
+    assert(Math.abs(r.height - Math.min(z, 149)) < 1e-6, 'wrong click cap');
+    assert(JSON.stringify(r.tris) === JSON.stringify(sway.swayAtFace(topo, res, ID, side, [...point], opts).tris),
+      'rebuilding the stored point changes the cap');
+    assert(isClosed(r.tris));
+  }
+  const low = sway.swayAtFace(topo, res, ID, side, [0, -15, 10], opts);
+  assert(!low.ok && /clicked height/.test(low.reason), 'a low click silently grew to minimum height');
+  const auto = sway.buildSwayBraces(topo, res, ID, opts);
+  assert(auto.count > 0 && auto.ribs.every((r) => r.height > 100), 'manual cap leaked into Auto');
+  const a = Math.PI / 9, rot = [1, 0, 0, 0, Math.cos(a), Math.sin(a), 0, -Math.sin(a), Math.cos(a)];
+  const turned = analyze(topo, 45, rot), o = turned.offset;
+  const p = [o.x, -15 * rot[4] + 60 * rot[7] + o.y, -15 * rot[5] + 60 * rot[8] + o.z];
+  const r = sway.swayAtFace(topo, turned, rot, side, p, opts);
+  assert(r.ok && r.height <= p[2] && r.tris.every((v) => v[2] <= p[2] + 1e-9), 'rotated cap is not print-space z');
 });
 
 Deno.test('sway: off by default -- buildFins without the option adds none', () => {
@@ -152,12 +177,12 @@ Deno.test('sway: a brace facing another across a channel is refused, a staggered
   };
   const inA = faceFacing(1, -20), inB = faceFacing(-1, 20);   // the two channel walls
   const opts = { tines: true, layerHeight: LAYER };
-  const first = sway.swayAtFace(topo, res, ID, inA, [0, -20, 60], opts);
+  const first = sway.swayAtFace(topo, res, ID, inA, [0, -20, 150], opts);
   assert(first.ok, `first brace failed: ${first.reason}`);
-  const across = sway.swayAtFace(topo, res, ID, inB, [0, 20, 60], opts, [first]);
+  const across = sway.swayAtFace(topo, res, ID, inB, [0, 20, 150], opts, [first]);
   assert(!across.ok && /run into another brace/.test(across.reason),
          `a brace straight across the channel was not refused (${across.ok ? 'built' : across.reason})`);
-  const staggered = sway.swayAtFace(topo, res, ID, inB, [20, 20, 60], opts, [first]);
+  const staggered = sway.swayAtFace(topo, res, ID, inB, [20, 20, 150], opts, [first]);
   assert(staggered.ok, `a staggered brace was refused: ${staggered.reason}`);
   assert(!sway.swayClashes(staggered, [first]), 'the staggered brace still reads as clashing');
 });

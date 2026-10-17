@@ -70,6 +70,29 @@ Deno.test('brace: a stocky wall, or one standing on the part, gets none', () => 
   assert(braceWall(line(3, 30), () => 12, NONE, 0, []) === 0, 'a floor on the part is not braced (v1)');
 });
 
+Deno.test('brace: a 1 cm threshold builds minimum-length face ribs just above the threshold', () => {
+  const before = BRACE.tallH;
+  try {
+    BRACE.tallH = 10;
+    for (const height of [10.3, 10.8, 11.8, 12.5]) {
+      const top = line(40, height + PROP.gap), out = [];
+      assert(braceWall(top, () => 0, NONE, 0, out, undefined, { tall: true }) === 2,
+        `a ${height} mm wall gets a face pair`);
+      const b = box(out);
+      assert(b[1] <= -BRACE.minReach && b[4] >= BRACE.minReach, 'ribs extend from both faces');
+      assert(b[2] >= 0 && b[5] <= height - PROP.tipH - 1, 'ribs remain on the bed and below the tip');
+      const blocked = [];
+      assert(braceWall(top, () => 0, NONE, 0, blocked, () => false, { tall: true }) === 0, 'blocked ribs stay refused');
+      assert(blocked.length === 0, 'a collision leaves no rib geometry');
+      assert(braceWall(top, () => 1, NONE, 0, [], undefined, { tall: true }) === 0, 'ribs never land on the part');
+    }
+    for (const height of [9, 10]) {
+      assert(braceWall(line(40, height + PROP.gap), () => 0, NONE, 0, [], undefined, { tall: true }) === 0,
+        'walls at or below the threshold are left alone');
+    }
+  } finally { BRACE.tallH = before; }
+});
+
 Deno.test('brace: a rib the caller rejects (another support in the way) is not built', () => {
   const out = [];
   let asked = 0;

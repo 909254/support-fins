@@ -32,7 +32,8 @@ async function roundTrip(session) {
 }
 
 Deno.test('session: written beside the model and read back as it was', async () => {
-  const s = { v: 1, part: { size: [80, 20, 39] }, finMode: 'draw', finsVisible: true, form: { gap: '0.25' },
+  const s = { v: 1, part: { size: [80, 20, 39] }, finMode: 'draw', finsVisible: true,
+              form: { gap: '0.25', 'sway-cross-height': '70', 'tine-contact-offset': '0.12' },
               walls: [{ a: [1, 2, 3], b: [4, 5, 6] }, { kind: 'sway', a: [7, 8, 9] }] };
   const r = await roundTrip(s);
   assert(JSON.stringify(r.session) === JSON.stringify(s), `session changed: ${JSON.stringify(r.session)}`);
